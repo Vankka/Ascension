@@ -388,14 +388,14 @@ public abstract class AbstractSyncModule<
                         return CompletableFuture.completedFuture(GenericSyncResults.WRONG_DIRECTION);
                     }
 
-                    return applyGame(config, playerUUID, discordState).thenApply(v -> GenericSyncResults.ADD_GAME);
+                    return applyGame(config, playerUUID, discordState);
                 } else {
                     // Missing game, remove Discord
                     if (direction == SyncDirection.DISCORD_TO_MINECRAFT) {
                         return CompletableFuture.completedFuture(GenericSyncResults.WRONG_DIRECTION);
                     }
 
-                    return applyDiscord(config, userId, null).thenApply(v -> GenericSyncResults.REMOVE_DISCORD);
+                    return applyDiscord(config, userId, null);
                 }
             } else {
                 if (side == SyncSide.DISCORD) {
@@ -404,14 +404,14 @@ public abstract class AbstractSyncModule<
                         return CompletableFuture.completedFuture(GenericSyncResults.WRONG_DIRECTION);
                     }
 
-                    return applyGame(config, playerUUID, null).thenApply(v -> GenericSyncResults.REMOVE_GAME);
+                    return applyGame(config, playerUUID, null);
                 } else {
                     // Has game, add Discord
                     if (direction == SyncDirection.DISCORD_TO_MINECRAFT) {
                         return CompletableFuture.completedFuture(GenericSyncResults.WRONG_DIRECTION);
                     }
 
-                    return applyDiscord(config, userId, gameState).thenApply(v -> GenericSyncResults.ADD_DISCORD);
+                    return applyDiscord(config, userId, gameState);
                 }
             }
         }).exceptionally(t -> {
