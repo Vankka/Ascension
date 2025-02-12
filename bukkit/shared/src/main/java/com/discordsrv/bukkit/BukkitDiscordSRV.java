@@ -60,7 +60,11 @@ public abstract class BukkitDiscordSRV extends AbstractDiscordSRV<IBukkitBootstr
         // Integrations
         registerIntegration("com.discordsrv.bukkit.integration.VaultIntegration");
         registerIntegration("com.discordsrv.bukkit.integration.PlaceholderAPIIntegration");
-        registerIntegration("com.discordsrv.bukkit.integration.EssentialsXIntegration");
+
+        // EssentialsX Integrations
+        registerIntegration("com.discordsrv.bukkit.integration.essentialsx.EssentialsXChatModule");
+        registerIntegration("com.discordsrv.bukkit.integration.essentialsx.EssentialsXMuteModule");
+        registerIntegration("com.discordsrv.bukkit.integration.essentialsx.EssentialsXNicknameModule");
 
         // Chat Integrations
         registerIntegration("com.discordsrv.bukkit.integration.chat.ChattyChatIntegration");

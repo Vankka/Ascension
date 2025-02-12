@@ -95,6 +95,9 @@ public abstract class MainConfig implements Config {
     @Comment("Configuration options for group-role synchronization")
     public GroupSyncConfig groupSync = new GroupSyncConfig();
 
+    @Comment("Configuration options for nickname synchronization")
+    public NicknameSyncConfig nicknameSync = new NicknameSyncConfig();
+
     @Comment("Configuration options for ban synchronization")
     public BanSyncConfig banSync = new BanSyncConfig();
 

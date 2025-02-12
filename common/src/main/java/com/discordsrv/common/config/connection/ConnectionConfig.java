@@ -22,6 +22,7 @@ import com.discordsrv.common.config.Config;
 import com.discordsrv.common.config.configurate.annotation.Constants;
 import com.discordsrv.common.config.main.MainConfig;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
 public class ConnectionConfig implements Config {
@@ -50,5 +51,6 @@ public class ConnectionConfig implements Config {
 
     public UpdateConfig update = new UpdateConfig();
 
+    @Comment("Configuration options for the http proxy to use for all HTTP and WS connections. SOCKS is not supported")
     public HttpProxyConfig httpProxy = new HttpProxyConfig();
 }

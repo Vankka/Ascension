@@ -16,56 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.abstraction.sync.result;
+package com.discordsrv.common.feature.nicknamesync.enums;
 
-public enum GenericSyncResults implements ISyncResult {
+import com.discordsrv.common.abstraction.sync.result.ISyncResult;
 
-    // Success, actioned
-    ADD_DISCORD("Add %d", true),
-    REMOVE_DISCORD("Remove %d", true),
-    ADD_GAME("Add %g", true),
-    REMOVE_GAME("Remove %g", true),
+public enum NicknameSyncResult implements ISyncResult {
 
-    // Success, Nothing done
-    BOTH_TRUE("Both true"),
-    BOTH_FALSE("Both false"),
-    WRONG_DIRECTION("Wrong direction"),
-
-    // Fail
-    NOT_LINKED("Accounts not linked"),
-
-    // Error
-    MODULE_NOT_FOUND("Game data not available", false, false),
-    GUILD_NOT_FOUND("Discord server not found", false, false),
-    MEMBER_CANNOT_INTERACT("Cannot interact with the member", false, false),
-
-    ;
-
-    public static GenericSyncResults both(boolean value) {
-        return value ? BOTH_TRUE : BOTH_FALSE;
-    }
+    MATCH("Both sides match", false),
+    SET_DISCORD("Set Discord nickname", true),
+    SET_GAME("Set game nickname", true);
 
     private final String message;
     private final boolean update;
-    private final boolean success;
 
-    GenericSyncResults(String message) {
-        this(message, false);
-    }
-
-    GenericSyncResults(String message, boolean update) {
-        this(message, update, true);
-    }
-
-    GenericSyncResults(String message, boolean update, boolean success) {
+    NicknameSyncResult(String message, boolean update) {
         this.message = message;
         this.update = update;
-        this.success = success;
     }
 
     @Override
     public boolean isError() {
-        return !success;
+        return false;
     }
 
     @Override
