@@ -23,7 +23,9 @@ import com.discordsrv.api.component.MinecraftComponent;
 import com.discordsrv.api.module.type.PunishmentModule;
 import com.discordsrv.api.punishment.Punishment;
 import com.discordsrv.bukkit.BukkitDiscordSRV;
-import com.discordsrv.common.core.module.type.AbstractModule;
+import com.discordsrv.bukkit.debug.EventObserver;
+import com.discordsrv.bukkit.listener.AbstractBukkitListener;
+import com.discordsrv.common.core.logging.NamedLogger;
 import com.discordsrv.common.feature.bansync.BanSyncModule;
 import com.discordsrv.common.util.ComponentUtil;
 import io.papermc.paper.ban.BanListType;
@@ -33,7 +35,6 @@ import org.bukkit.ban.ProfileBanList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -45,27 +46,43 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @ApiStatus.AvailableSince("Paper 1.21.1")
-public class PaperBanModule extends AbstractModule<BukkitDiscordSRV> implements Listener, PunishmentModule.Bans {
+public class PaperBanModule extends AbstractBukkitListener<PlayerKickEvent> implements PunishmentModule.Bans {
 
     public PaperBanModule(BukkitDiscordSRV discordSRV) {
-        super(discordSRV);
+        super(discordSRV, new NamedLogger(discordSRV, "BAN_MODULE"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
+        handleEventWithErrorHandling(event);
+    }
+
+    @Override
+    protected void handleEvent(PlayerKickEvent event, Void __) {
         switch (event.getCause()) {
             case BANNED:
             case IP_BANNED:
             case PLUGIN:
                 break;
+            default:
+                return;
         }
 
         Player player = event.getPlayer();
         BanSyncModule module = discordSRV.getModule(BanSyncModule.class);
         if (module != null) {
             getBan(player.getUniqueId())
-                    .whenComplete((punishment, t) -> module.notifyBanned(discordSRV.playerProvider().player(player), punishment));
+                    .whenComplete((punishment, t) -> {
+                        if (punishment != null) module.notifyBanned(discordSRV.playerProvider().player(player), punishment);
+                    });
         }
+    }
+
+    private EventObserver<PlayerKickEvent, Boolean> observer;
+
+    @Override
+    protected void observeEvents(boolean enable) {
+        observer = observeEvent(observer, PlayerKickEvent.class, PlayerKickEvent::isCancelled, enable);
     }
 
     @Override
@@ -75,7 +92,7 @@ public class PaperBanModule extends AbstractModule<BukkitDiscordSRV> implements 
 
         BanEntry<PlayerProfile> ban = banList.getBanEntry(profile);
         if (ban == null) {
-            return null;
+            return CompletableFuture.completedFuture(null);
         }
         Date expiration = ban.getExpiration();
         String reason = ban.getReason();

@@ -27,6 +27,8 @@ public enum BanSyncResult implements ISyncResult {
     NO_DISCORD_CONNECTION("No Discord connection"),
     GUILD_DOESNT_EXIST("Guild doesn't exist"),
     INVALID_CONFIG("Invalid config"),
+    NOT_A_GUILD_MEMBER("User is not part of the server the role is in"),
+    ROLE_CHANGE_CANNOT_CHANGE_GAME("Ban sync is configured such that adding or removing the banned role in Discord does not affect game state"),
 
     ;
 

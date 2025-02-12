@@ -18,6 +18,10 @@
 
 package com.discordsrv.common.config.main;
 
+import com.discordsrv.common.abstraction.sync.enums.BanSyncDiscordAction;
+import com.discordsrv.common.abstraction.sync.enums.BanSyncDiscordTrigger;
+import com.discordsrv.common.config.configurate.annotation.Constants;
+import com.discordsrv.common.config.configurate.annotation.Order;
 import com.discordsrv.common.config.main.generic.AbstractSyncConfig;
 import com.discordsrv.common.feature.bansync.BanSyncModule;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
@@ -27,25 +31,17 @@ import org.spongepowered.configurate.objectmapping.meta.Comment;
 public class BanSyncConfig extends AbstractSyncConfig<BanSyncConfig, BanSyncModule.Game, Long> {
 
     @Comment("The id for the Discord server where the bans should be synced from/to")
+    @Order(-10)
     public long serverId = 0L;
 
-    @Comment("The reason applied when creating new bans in Minecraft")
-    public String gameBanReasonFormat = "%punishment_reason%";
+    @Comment("Role id that will be used for role related actions, if they are configured below")
+    public Long bannedRoleId = 0L;
 
-    @Comment("The punisher applied when creating new bans in Minecraft")
-    public String gamePunisherFormat = "%user_color%@%user_name%";
+    @Comment("Options for syncing bans from Minecraft to Discord")
+    public MinecraftToDiscordConfig minecraftToDiscord = new MinecraftToDiscordConfig();
 
-    @Comment("The kick reason when a ban is applied to an online player")
-    public String gameKickReason = "&cYou have been banned for &f%punishment_reason% &cby &f%punishment_punisher%";
-
-    @Comment("The reason applied when creating new bans in Discord")
-    public String discordBanReasonFormat = "Banned by %punishment_punisher% in Minecraft for %punishment_reason%, ends: %punishment_until:'YYYY-MM-dd HH:mm:ss zzz'|text:'Never'%";
-
-    @Comment("The reason applied when removing bans in Discord")
-    public String discordUnbanReasonFormat = "Unbanned in Minecraft";
-
-    @Comment("The amount of hours to delete Discord messages, when syncing bans from Minecraft to Discord")
-    public int discordMessageHoursToDelete = 0;
+    @Comment("Options for syncing bans from Discord to Minecraft")
+    public DiscordToMinecraftConfig discordToMinecraft = new DiscordToMinecraftConfig();
 
     @Comment("Resync upon linking")
     public boolean resyncUponLinking = true;
@@ -73,5 +69,45 @@ public class BanSyncConfig extends AbstractSyncConfig<BanSyncConfig, BanSyncModu
     @Override
     public String describe() {
         return Long.toUnsignedString(serverId);
+    }
+
+    @ConfigSerializable
+    public static class DiscordToMinecraftConfig {
+
+        // TODO make ROLE ignore bans entirely
+        @Comment("What action(s) on Discord should trigger a ban/unban in Minecraft. Valid options:\n"
+                + "ban:     A ban/unban on the Discord Server\n"
+                + "role:    Addition/removal of the banned role (specified above) to the user on Discord\n"
+                + "either:  Either of the above\n"
+                + "BEWARE: Settings of 'role' or 'either' can be exploited to remove bans from players if %1 is set to 'discord'")
+        @Constants.Comment("tie-breaker")
+        public BanSyncDiscordTrigger trigger = BanSyncDiscordTrigger.BAN;
+
+        @Comment("The reason used when creating new bans in Minecraft")
+        public String banReasonFormat = "%punishment_reason%";
+
+        @Comment("The punisher shown when creating new bans in Minecraft")
+        public String punisherFormat = "%user_color%@%user_name%";
+
+        @Comment("The kick reason when a ban is applied to a online player")
+        public String kickReason = "&cYou have been banned for &f%punishment_reason% &cby &f%punishment_punisher%";
+    }
+
+    @ConfigSerializable
+    public static class MinecraftToDiscordConfig {
+
+        @Comment("What action(s) to perform on the linked Discord account when a player is banned in Minecraft. Can be configured in more detail below\n"
+                + "Valid options: %1, %2")
+        @Constants.Comment({"ban", "role"})
+        public BanSyncDiscordAction action = BanSyncDiscordAction.BAN;
+
+        @Comment("The reason used when creating new bans in Discord or adding the banned role to users")
+        public String banReasonFormat = "Banned by %punishment_punisher% in Minecraft for %punishment_reason%, ends: %punishment_until:'YYYY-MM-dd HH:mm:ss zzz'|text:'Never'%";
+
+        @Comment("The reason used when removing bans in Discord or removing the banned role from users")
+        public String unbanReasonFormat = "Unbanned in Minecraft";
+
+        @Comment("The number of hours of Discord messages to delete when syncing bans from Minecraft to Discord (if doing so is enabled)")
+        public int messageHoursToDelete = 0;
     }
 }

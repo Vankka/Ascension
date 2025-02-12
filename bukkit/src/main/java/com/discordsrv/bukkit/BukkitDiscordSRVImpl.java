@@ -18,6 +18,8 @@
 
 package com.discordsrv.bukkit;
 
+import com.discordsrv.bukkit.ban.BukkitBanModule;
+import com.discordsrv.bukkit.ban.PaperBanModule;
 import com.discordsrv.bukkit.command.game.BukkitGameCommandExecutionHelper;
 import com.discordsrv.bukkit.command.game.PaperGameCommandExecutionHelper;
 import com.discordsrv.bukkit.command.game.handler.BukkitBasicCommandHandler;
@@ -123,6 +125,7 @@ public class BukkitDiscordSRVImpl extends BukkitDiscordSRV {
             registerModule(PaperDeathListener::new);
             registerModule(PaperJoinListener::new);
             registerModule(PaperQuitListener::new);
+            registerModule(PaperBanModule::new);
 
             if (ReflectionUtil.classExists("io.papermc.paper.event.player.AsyncChatDecorateEvent")) {
                 // Paper (Since 1.19.1)
@@ -137,6 +140,7 @@ public class BukkitDiscordSRVImpl extends BukkitDiscordSRV {
             registerModule(BukkitDeathListener::new);
             registerModule(BukkitJoinListener::new);
             registerModule(BukkitQuitListener::new);
+            registerModule(BukkitBanModule::new);
         }
     }
 

@@ -16,26 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.discordsrv.common.feature.bansync.enums;
+package com.discordsrv.common.abstraction.sync.enums;
 
-import com.discordsrv.common.abstraction.sync.cause.ISyncCause;
-
-public enum BanSyncCause implements ISyncCause {
-
-    PLAYER_BANNED("Player banned"),
-    BANNED_ROLE_CHANGED("Banned role changed"),
-    BANNED_ON_DISCORD("Banned on Discord"),
-    UNBANNED_ON_DISCORD("Unbanned on Discord")
-    ;
-
-    private final String prettyCause;
-
-    BanSyncCause(String prettyCause) {
-        this.prettyCause = prettyCause;
-    }
-
-    @Override
-    public String toString() {
-        return prettyCause;
-    }
+public enum BanSyncDiscordTrigger {
+    BAN,
+    ROLE,
+    EITHER
 }
