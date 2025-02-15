@@ -1,0 +1,647 @@
+{
+  "config.yaml_comments": {
+    "$header": "Welcome to the DiscordSRV configuration file\n\nLooking for the \"BotToken\" option? It has been moved into the %1 file\nNeed help with the format for Minecraft messages? %2\nNeed help with Discord markdown? %3\nList of placeholders %4",
+    "automatic-configuration-upgrade": {
+      "_comment": "Automatically upgrade configuration files on startup or reload if any values are missing"
+    },
+    "channels": {
+      "_comment": "Channels configuration\n\nThis is where everything related to in-game chat channels is configured.\nThe key of this option is the in-game channel name (the default keys are \"%1\" and \"%2\")\n%3 and %4 can be configured for all channels except \"%2\"\n\"%2\" is a special section which has the default values for all channels unless they are specified (overridden) under the channel's own section\nSo if you don't specify a certain option under a channel's own section, the option will take its value from the \"%2\" section",
+      "global": {
+        "channel-ids": {
+          "_comment": "The text, announcement, voice and/or stage channel ids this in-game channel will forward to in Discord"
+        },
+        "threads": {
+          "_comment": "The threads that this in-game channel will forward to in Discord (this can be used with or instead of the %1 option)"
+        },
+        "minecraft-to-discord": {
+          "content-regex-filters": {
+            "_comment": "Regex filters for Minecraft message contents (this is the %message% part of the \"format\" option)"
+          },
+          "mentions": {
+            "render-mentions-in-game": {
+              "_comment": "Should mentions be rendered in Minecraft when sent in Minecraft"
+            },
+            "roles": {
+              "_comment": "If role mentions should be rendered on Discord\n\nThe player needs one of the below permission to trigger notifications:\n- discordsrv.mention.roles.mentionable (for roles which have \"Allow anyone to @mention this role\" enabled)\n- discordsrv.mention.roles.all (to mention ALL roles except @everyone)"
+            },
+            "channels": {
+              "_comment": "If channel mentions should be rendered on Discord"
+            },
+            "users": {
+              "_comment": "If user mentions should be rendered on Discord\nThe player needs the discordsrv.mention.user permission to trigger a notification\nRequires the \"Server Members Intent\""
+            },
+            "uncached-users": {
+              "_comment": "If uncached users should be looked up from the Discord API when a mention (\"@something\") occurs in chat.\nThe player needs the discordsrv.mention.lookup.user permission for uncached members to be looked up\nThis WILL cause sending messages to be delayed"
+            },
+            "everyone": {
+              "_comment": "If @everyone and @here mentions should be enabled\nThe player needs the discordsrv.mention.everyone permission to render the mention and trigger a notification"
+            }
+          }
+        },
+        "discord-to-minecraft": {
+          "enabled": {
+            "_comment": "Requires the \"Message Content Intent\""
+          },
+          "format": {
+            "_comment": "The Discord to Minecraft message format for regular users and bots\nSuggested placeholders:\n%user_effective_server_name% - The Discord user's name as seen in the server the message was sent in\n%user_effective_name% - The Discord user's name as seen in direct messages\n%user_name% - The Discord user's username (the one below their display name when you click in their profile)\n%user_tag% - The Discord user's username and possible discriminator (mostly useful with bots)\n%user_roles% - The Discord user's roles\n%message_reply% - The value from %2 if the Discord message is in reply to another message\n%message_attachments% - The value from %3 for each attachment the Discord message\n%message% - The content of the Discord message after %4 are applied\nMore placeholders at %1"
+          },
+          "webhook-format": {
+            "_comment": "The Discord to Minecraft message format for webhook messages (if enabled)"
+          },
+          "attachment-format": {
+            "_comment": "Format for a single attachment in the %message_attachments% placeholder"
+          },
+          "reply-format": {
+            "_comment": "Format for the %message_reply% placeholder, when the message is a reply to another message"
+          },
+          "content-regex-filters": {
+            "_comment": "Regex filters for Discord message contents (this is the %message% part of the \"format\" option)"
+          },
+          "ignores": {
+            "_comment": "Users, bots, roles and webhooks to ignore",
+            "user-bot-and-webhook-ids": {
+              "_comment": "User, bot and webhook ids to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "role-ids": {
+              "_comment": "Role ids for users and bots to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "bots": {
+              "_comment": "If all bots (webhooks not included) should be ignored"
+            },
+            "webhooks": {
+              "_comment": "If all webhooks should be ignored (webhook messages sent by this DiscordSRV instance will always be ignored)"
+            }
+          },
+          "unicode-emoji-behaviour": {
+            "_comment": "How should unicode emoji be shown in-game:\n- hide: hides emojis in-game\n- show: shows emojis in-game as is (emojis may not be visible without resource packs)\n"
+          },
+          "delay-millis": {
+            "_comment": "The number of milliseconds by which to delay processing Discord messages, if the message is deleted in that time it will not be processed.\nThis can be used together with Discord moderation bots, to filter forwarded messages"
+          }
+        },
+        "mentions": {
+          "_comment": "The representations of Discord mentions in-game",
+          "role": {
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "channel": {
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "user": {
+            "format-global": {
+              "_comment": "The format shown in-game for users that cannot be linked to a specific Discord server"
+            },
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "custom-emoji-behaviour": {
+            "_comment": "How should custom emoji be shown in-game:\n- hide: custom emoji will not be shown in-game\n- blank: custom emoji will only be shown in-game if it is rendered by a 3rd party plugin\n- name: shows the name of the custom emoji in-game (for example :discordsrv:), unless rendered by a 3rd party plugin"
+          }
+        },
+        "leave-messages": {
+          "enable-silent-permission": {
+            "_comment": "If the \"%1\" permission should determine whether leave messages are sent"
+          },
+          "ignore-if-joined-within-ms": {
+            "_comment": "Ignore if the player joined within the given number of milliseconds"
+          }
+        },
+        "mirroring": {
+          "_comment": "Settings for synchronizing messages between the defined Discord channels and threads",
+          "enabled": {
+            "_comment": "Requires the \"Message Content Intent\""
+          },
+          "ignores": {
+            "_comment": "Users to not mirror",
+            "user-bot-and-webhook-ids": {
+              "_comment": "User, bot and webhook ids to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "role-ids": {
+              "_comment": "Role ids for users and bots to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "bots": {
+              "_comment": "If all bots (webhooks not included) should be ignored"
+            },
+            "webhooks": {
+              "_comment": "If all webhooks should be ignored (webhook messages sent by this DiscordSRV instance will always be ignored)"
+            }
+          },
+          "username-format": {
+            "_comment": "The format of the username of mirrored messages\nIt's recommended to include some special character if in-game messages use webhooks,\nin order to prevent Discord users and in-game players with the same name being grouped together"
+          },
+          "reply-format": {
+            "_comment": "The format when a message is a reply.\n%message% will be replaced with the message content\n%message_jump_url% will be replaced with the url to the replied message in the channel the message is sent in"
+          },
+          "attachments": {
+            "_comment": "Attachment related options",
+            "maximum-size-kb": {
+              "_comment": "Maximum size (in kB) to download and re-upload, set to 0 for unlimited or -1 to disable re-uploading.\nThe default value is -1 (disabled)\n\nWhen this is enabled, files smaller than the specified limit are downloaded and then re-uploaded to each mirror channel individually.\nPlease consider limiting the users allowed to attach files if this is enabled,\nas spam of large files may result in a lot of downstream and upstream data usage"
+            },
+            "embed-attachments": {
+              "_comment": "If attachments should be placed into an embed in mirrored messages instead of re-uploading"
+            }
+          }
+        },
+        "channel-locking": {
+          "channels": {
+            "everyone": {
+              "_comment": "If the permissions should be taken from @everyone while the server is offline"
+            },
+            "role-ids": {
+              "_comment": "Role ids for roles that should have the permissions taken while the server is offline"
+            },
+            "read": {
+              "_comment": "If the \"View Channel\" permission should be taken from the specified roles"
+            },
+            "write": {
+              "_comment": "If the \"Send Messages\" permission should be taken from the specified roles"
+            },
+            "add-reactions": {
+              "_comment": "If the \"Add Reactions\" permission should be taken from the specified roles"
+            }
+          },
+          "threads": {
+            "archive": {
+              "_comment": "If the configured threads should be archived while the server is shutdown"
+            },
+            "lock": {
+              "_comment": "If the configured threads should be locked while the server is shutdown"
+            }
+          }
+        }
+      },
+      "default": {
+        "minecraft-to-discord": {
+          "content-regex-filters": {
+            "_comment": "Regex filters for Minecraft message contents (this is the %message% part of the \"format\" option)"
+          },
+          "mentions": {
+            "render-mentions-in-game": {
+              "_comment": "Should mentions be rendered in Minecraft when sent in Minecraft"
+            },
+            "roles": {
+              "_comment": "If role mentions should be rendered on Discord\n\nThe player needs one of the below permission to trigger notifications:\n- discordsrv.mention.roles.mentionable (for roles which have \"Allow anyone to @mention this role\" enabled)\n- discordsrv.mention.roles.all (to mention ALL roles except @everyone)"
+            },
+            "channels": {
+              "_comment": "If channel mentions should be rendered on Discord"
+            },
+            "users": {
+              "_comment": "If user mentions should be rendered on Discord\nThe player needs the discordsrv.mention.user permission to trigger a notification\nRequires the \"Server Members Intent\""
+            },
+            "uncached-users": {
+              "_comment": "If uncached users should be looked up from the Discord API when a mention (\"@something\") occurs in chat.\nThe player needs the discordsrv.mention.lookup.user permission for uncached members to be looked up\nThis WILL cause sending messages to be delayed"
+            },
+            "everyone": {
+              "_comment": "If @everyone and @here mentions should be enabled\nThe player needs the discordsrv.mention.everyone permission to render the mention and trigger a notification"
+            }
+          }
+        },
+        "discord-to-minecraft": {
+          "enabled": {
+            "_comment": "Requires the \"Message Content Intent\""
+          },
+          "format": {
+            "_comment": "The Discord to Minecraft message format for regular users and bots\nSuggested placeholders:\n%user_effective_server_name% - The Discord user's name as seen in the server the message was sent in\n%user_effective_name% - The Discord user's name as seen in direct messages\n%user_name% - The Discord user's username (the one below their display name when you click in their profile)\n%user_tag% - The Discord user's username and possible discriminator (mostly useful with bots)\n%user_roles% - The Discord user's roles\n%message_reply% - The value from %2 if the Discord message is in reply to another message\n%message_attachments% - The value from %3 for each attachment the Discord message\n%message% - The content of the Discord message after %4 are applied\nMore placeholders at %1"
+          },
+          "webhook-format": {
+            "_comment": "The Discord to Minecraft message format for webhook messages (if enabled)"
+          },
+          "attachment-format": {
+            "_comment": "Format for a single attachment in the %message_attachments% placeholder"
+          },
+          "reply-format": {
+            "_comment": "Format for the %message_reply% placeholder, when the message is a reply to another message"
+          },
+          "content-regex-filters": {
+            "_comment": "Regex filters for Discord message contents (this is the %message% part of the \"format\" option)"
+          },
+          "ignores": {
+            "_comment": "Users, bots, roles and webhooks to ignore",
+            "user-bot-and-webhook-ids": {
+              "_comment": "User, bot and webhook ids to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "role-ids": {
+              "_comment": "Role ids for users and bots to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "bots": {
+              "_comment": "If all bots (webhooks not included) should be ignored"
+            },
+            "webhooks": {
+              "_comment": "If all webhooks should be ignored (webhook messages sent by this DiscordSRV instance will always be ignored)"
+            }
+          },
+          "unicode-emoji-behaviour": {
+            "_comment": "How should unicode emoji be shown in-game:\n- hide: hides emojis in-game\n- show: shows emojis in-game as is (emojis may not be visible without resource packs)\n"
+          },
+          "delay-millis": {
+            "_comment": "The number of milliseconds by which to delay processing Discord messages, if the message is deleted in that time it will not be processed.\nThis can be used together with Discord moderation bots, to filter forwarded messages"
+          }
+        },
+        "mentions": {
+          "_comment": "The representations of Discord mentions in-game",
+          "role": {
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "channel": {
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "user": {
+            "format-global": {
+              "_comment": "The format shown in-game for users that cannot be linked to a specific Discord server"
+            },
+            "format": {
+              "_comment": "The format shown in-game"
+            },
+            "unknown-format": {
+              "_comment": "The format when the entity is deleted or can't be looked up"
+            }
+          },
+          "custom-emoji-behaviour": {
+            "_comment": "How should custom emoji be shown in-game:\n- hide: custom emoji will not be shown in-game\n- blank: custom emoji will only be shown in-game if it is rendered by a 3rd party plugin\n- name: shows the name of the custom emoji in-game (for example :discordsrv:), unless rendered by a 3rd party plugin"
+          }
+        },
+        "leave-messages": {
+          "enable-silent-permission": {
+            "_comment": "If the \"%1\" permission should determine whether leave messages are sent"
+          },
+          "ignore-if-joined-within-ms": {
+            "_comment": "Ignore if the player joined within the given number of milliseconds"
+          }
+        },
+        "mirroring": {
+          "_comment": "Settings for synchronizing messages between the defined Discord channels and threads",
+          "enabled": {
+            "_comment": "Requires the \"Message Content Intent\""
+          },
+          "ignores": {
+            "_comment": "Users to not mirror",
+            "user-bot-and-webhook-ids": {
+              "_comment": "User, bot and webhook ids to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "role-ids": {
+              "_comment": "Role ids for users and bots to ignore",
+              "whitelist": {
+                "_comment": "true for whitelisting the provided ids, false for blacklisting them"
+              }
+            },
+            "bots": {
+              "_comment": "If all bots (webhooks not included) should be ignored"
+            },
+            "webhooks": {
+              "_comment": "If all webhooks should be ignored (webhook messages sent by this DiscordSRV instance will always be ignored)"
+            }
+          },
+          "username-format": {
+            "_comment": "The format of the username of mirrored messages\nIt's recommended to include some special character if in-game messages use webhooks,\nin order to prevent Discord users and in-game players with the same name being grouped together"
+          },
+          "reply-format": {
+            "_comment": "The format when a message is a reply.\n%message% will be replaced with the message content\n%message_jump_url% will be replaced with the url to the replied message in the channel the message is sent in"
+          },
+          "attachments": {
+            "_comment": "Attachment related options",
+            "maximum-size-kb": {
+              "_comment": "Maximum size (in kB) to download and re-upload, set to 0 for unlimited or -1 to disable re-uploading.\nThe default value is -1 (disabled)\n\nWhen this is enabled, files smaller than the specified limit are downloaded and then re-uploaded to each mirror channel individually.\nPlease consider limiting the users allowed to attach files if this is enabled,\nas spam of large files may result in a lot of downstream and upstream data usage"
+            },
+            "embed-attachments": {
+              "_comment": "If attachments should be placed into an embed in mirrored messages instead of re-uploading"
+            }
+          }
+        },
+        "channel-locking": {
+          "channels": {
+            "everyone": {
+              "_comment": "If the permissions should be taken from @everyone while the server is offline"
+            },
+            "role-ids": {
+              "_comment": "Role ids for roles that should have the permissions taken while the server is offline"
+            },
+            "read": {
+              "_comment": "If the \"View Channel\" permission should be taken from the specified roles"
+            },
+            "write": {
+              "_comment": "If the \"Send Messages\" permission should be taken from the specified roles"
+            },
+            "add-reactions": {
+              "_comment": "If the \"Add Reactions\" permission should be taken from the specified roles"
+            }
+          },
+          "threads": {
+            "archive": {
+              "_comment": "If the configured threads should be archived while the server is shutdown"
+            },
+            "lock": {
+              "_comment": "If the configured threads should be locked while the server is shutdown"
+            }
+          }
+        }
+      }
+    },
+    "linked-accounts": {
+      "enabled": {
+        "_comment": "Should linked accounts be enabled"
+      },
+      "provider": {
+        "_comment": "The linked account provider\n\n - auto: Uses \"minecraftauth\" if the %1 permits it and the server is in online mode or using ip forwarding, otherwise \"%3\"\n - minecraftauth: Uses %2 as the linked account provider (offline and (non-linked) bedrock players cannot link using this method)\n - storage: Use the configured database for linked accounts"
+      }
+    },
+    "presence-updater": {
+      "updater-rate-in-seconds": {
+        "_comment": "The number of seconds between presence updates\nMinimum value: %1"
+      }
+    },
+    "group-sync": {
+      "_comment": "Configuration options for group-role synchronization",
+      "sets": {
+        "_comment": "Group-Role pairs for group synchronization\n\nIf you are not using LuckPerms and want to use Minecraft -> Discord synchronization, you must specify timed synchronization"
+      }
+    },
+    "ban-sync": {
+      "_comment": "Configuration options for ban synchronization",
+      "server-id": {
+        "_comment": "The id for the Discord server where the bans should be synced from/to"
+      },
+      "game-ban-reason-format": {
+        "_comment": "The reason applied when creating new bans in Minecraft"
+      },
+      "game-punisher-format": {
+        "_comment": "The punisher applied when creating new bans in Minecraft"
+      },
+      "game-kick-reason": {
+        "_comment": "The kick reason when a ban is applied to an online player"
+      },
+      "discord-ban-reason-format": {
+        "_comment": "The reason applied when creating new bans in Discord"
+      },
+      "discord-unban-reason-format": {
+        "_comment": "The reason applied when removing bans in Discord"
+      },
+      "discord-message-hours-to-delete": {
+        "_comment": "The amount of hours to delete Discord messages, when syncing bans from Minecraft to Discord"
+      },
+      "resync-upon-linking": {
+        "_comment": "Resync upon linking"
+      },
+      "direction": {
+        "_comment": "The direction to synchronize in.\nValid options: %1, %2, %3"
+      },
+      "timer": {
+        "_comment": "Timed resynchronization",
+        "enabled": {
+          "_comment": "If timed synchronization is enabled"
+        },
+        "cycle-time": {
+          "_comment": "The number of minutes between timed synchronization cycles"
+        }
+      },
+      "tie-breaker": {
+        "_comment": "Decides which side takes priority when using timed synchronization or the resync command and there are differences\nValid options: %1, %2"
+      }
+    },
+    "game-command": {
+      "_comment": "In-game command configuration",
+      "use-discord-command": {
+        "_comment": "If the %1 command should be set by DiscordSRV"
+      },
+      "use-link-alias": {
+        "_comment": "If %1 should be used as an alias for %2"
+      },
+      "discord-format": {
+        "_comment": "The Discord command response format (%1), player placeholders may be used"
+      }
+    },
+    "discord-command": {
+      "_comment": "Discord command configuration",
+      "execute": {
+        "ephemeral": {
+          "_comment": "If the command output should only be visible to the user who ran the command"
+        },
+        "output-mode": {
+          "_comment": "The mode for the command output, available options are:\n- markdown: Regular Discord markdown\n- ansi: A colored ansi code block\n- plain: Plain text\n- code_block: Plain code block\n- off: No command output\n\nPlease note that some commands may not be work with output forwarding"
+        },
+        "execution-conditions": {
+          "_comment": "At least one condition has to match to allow execution"
+        },
+        "suggest": {
+          "_comment": "If commands should be suggested while typing\nSuggestions go through the server's main thread (on servers with a main thread) to ensure compatibility."
+        },
+        "filter-suggestions": {
+          "_comment": "If suggestions should be filtered based on the \"%1\" option"
+        }
+      }
+    },
+    "console": {
+      "_comment": "Options for console channel(s) and/or thread(s)"
+    },
+    "invite": {
+      "_comment": "Configuration for the %1 placeholder. The below options will be attempted in the order they are in",
+      "invite-url": {
+        "_comment": "Manually enter an invite url here, if this isn't set this is ignored and the options below will take effect"
+      },
+      "server-id": {
+        "_comment": "The server id to automatically grab the vanity url from or to generate the invite to.\nIf this is not specified and the bot is private and only in a single server, it will use that"
+      },
+      "attempt-to-use-vanity-url": {
+        "_comment": "If the bot should automatically use the vanity invite url from the automatically determined server, if one is set"
+      },
+      "auto-create-invite": {
+        "_comment": "If the bot should automatically create an invite to the automatically determined server\nThe bot will only attempt to do so if it has permission to \"Create Invite\"\nThe server must also have a rules channel (available for community servers) or default channel (automatically determined by Discord)"
+      }
+    },
+    "messages": {
+      "default-language": {
+        "_comment": "The language code for the default language, if left blank the system default will be used.\nThis should be in the ISO 639-1 format (for example \"en\"), or ISO 639-1, an underscore and a ISO 3166-1 country code to specify dialect (for example \"pt_BR\")"
+      },
+      "multiple": {
+        "_comment": "If there should be a messages file per language (based on the player's or user's language), otherwise using the default"
+      },
+      "load-all-defaults": {
+        "_comment": "If all languages provided with DiscordSRV should be loaded into the messages directory, only functions when \"multiple\" is set to true"
+      }
+    },
+    "avatar-provider": {
+      "_comment": "Configuration for the %1 placeholder",
+      "provider": {
+        "_comment": "How the %1 placeholder provider\nAvailable values:\noff - Always use the default url\nurl - Use the url from the template in Discord directly"
+      },
+      "services": {
+        "_comment": "Bring your own avatar url templates, empty templates will be skipped\nSuggested Placeholders:\n%player_skin_texture_id% - The texture ID for the player\n%player_skin_model% - The skin model (classic, slim) for the player\n%player_uuid% - Full UUID for the player\n%player_uuid_short% - The UUID for the player without dashes\n%player_name% - The player's username\nMore placeholders at %1",
+        "texture-template": {
+          "_comment": "The url template, when the player's texture id and model is available."
+        },
+        "online-uuid-template": {
+          "_comment": "The url template, when the player has a online mode UUID"
+        },
+        "floodgate-template": {
+          "_comment": "The url template, for Bedrock players when the player has a Floodgate (Geyser) UUID"
+        },
+        "offline-template": {
+          "_comment": "The url template, when the player has a offline mode UUID"
+        }
+      },
+      "default-url": {
+        "_comment": "Default avatar URL"
+      }
+    },
+    "integrations": {
+      "disabled-integrations": {
+        "_comment": "Plugin integrations that should be disabled. Specify the names or ids of plugins to disable integrations for"
+      }
+    },
+    "member-caching": {
+      "_comment": "These options are for fine-tuning, only touch them if you know what you're doing",
+      "linked-users": {
+        "_comment": "If linked users' members should be cached\nRequires the \"Server Members Intent\""
+      },
+      "all": {
+        "_comment": "If all members should be cached\nRequires the \"Server Members Intent\""
+      },
+      "chunk": {
+        "_comment": "If members should be cached at startup\nRequires the \"Server Members Intent\""
+      },
+      "lru": {
+        "_comment": "Amount of users to keep in cache based on least-recently-used basis per Discord server\nSet to 0 to disable (always keep in cache)"
+      },
+      "chunking-server-filter": {
+        "_comment": "Filter for which servers should be cached at startup",
+        "blacklist": {
+          "_comment": "If the ids option acts as a blacklist, otherwise it is a whitelist"
+        }
+      }
+    },
+    "debug": {
+      "_comment": "Options for diagnosing DiscordSRV, you do not need to touch these options during normal operation",
+      "log-to-console": {
+        "_comment": "If debug messages should be logged into the console"
+      },
+      "additional-levels": {
+        "_comment": "Additional levels to log\nExample value: %1"
+      }
+    }
+  },
+  "connections.yaml_comments": {
+    "$header": "DiscordSRV's configuration file for connections to different external services.\nThis file is intended to contain connection details to services in order to keep them out of the %1\nand to serve as an easy way to identify and control what external connections are being used.\n\nAll domains listed as \"Requires a connection to\" require port %2 (%3) unless otherwise specified\n\n ABSOLUTELY DO NOT SEND THIS FILE TO ANYONE - IT ONLY CONTAINS SECRETS\n",
+    "bot": {
+      "token": {
+        "_comment": "The Discord bot token from https://discord.com/developers/applications\nRequires a connection to: discord.com, gateway.discord.gg, cdn.discordapp.com\nPrivacy Policy: https://discord.com/privacy Terms: https://discord.com/developers/docs/policies-and-agreements/developer-terms-of-service"
+      }
+    },
+    "storage": {
+      "backend": {
+        "_comment": "The storage backend to use.\n\n- H2\n- MySQL\n- MariaDB"
+      },
+      "sql-table-prefix": {
+        "_comment": "SQL table prefix"
+      },
+      "remote": {
+        "_comment": "Connection options for remote databases (MySQL, MariaDB)",
+        "database-address": {
+          "_comment": "The database address.\nUses the default port (MySQL: 3306)\nfor the database if a port isn't specified in the \"address:port\" format\nPlease make sure the port for your database is open and your firewall(s) allow(s) connections from the server to the database"
+        },
+        "database-name": {
+          "_comment": "The name of the database"
+        },
+        "username": {
+          "_comment": "The database username and password"
+        },
+        "pool-options": {
+          "_comment": "Connection pool options. Don't touch these unless you know what you're doing",
+          "maximum-pool-size": {
+            "_comment": "The maximum number of concurrent connections to keep to the database"
+          },
+          "minimum-pool-size": {
+            "_comment": "The minimum number of concurrent connections to keep to the database"
+          },
+          "keepalive-time": {
+            "_comment": "How frequently to attempt to keep connections alive, in order to prevent being timed out by the database or network infrastructure.\nThe time is specified in milliseconds. Use 0 to disable keepalive.The default is 0 (disabled)"
+          },
+          "maximum-lifetime": {
+            "_comment": "The maximum time a connection will be kept open in milliseconds.\nThe time is specified in milliseconds. Must be at least 30000ms (30 seconds)The default is 1800000ms (30 minutes)"
+          }
+        }
+      },
+      "driver-properties": {
+        "_comment": "Extra connection properties for database drivers"
+      }
+    },
+    "minecraft-auth": {
+      "allow": {
+        "_comment": "If minecraftauth.me connections are allowed for Discord linking (when linked-accounts.provider is \"auto\" or \"minecraftauth\").\nRequires a connection to: minecraftauth.me\nPrivacy Policy: https://minecraftauth.me/privacy"
+      },
+      "token": {
+        "_comment": "minecraftauth.me token for checking subscription, following and membership statuses for required linking\nYou can get the token from https://minecraftauth.me/api/token whilst logged in (please keep in mind that the token resets every time you visit that page)"
+      }
+    },
+    "update": {
+      "notification-enabled": {
+        "_comment": "On/off for notifications when a new version of DiscordSRV is available"
+      },
+      "notification-ingame": {
+        "_comment": "If players with the %1 permission should receive\nan update notification upon joining if there is an update available"
+      },
+      "enable-first-party-api-for-notifications": {
+        "_comment": "Whether the DiscordSRV download API should be used for update checks\nRequires a connection to: %1"
+      },
+      "github": {
+        "enabled": {
+          "_comment": "Whether the GitHub API should be used for update checks\nThis will be the secondary API if both first party and GitHub sources are enabled\nRequires a connection to: %1"
+        },
+        "api-token": {
+          "_comment": "The GitHub API token used for authenticating to the GitHub api,\nif this isn't specified the API will be used 'anonymously'\nThe token only requires read permission to %1 releases, workflows and commits"
+        }
+      },
+      "security": {
+        "enabled": {
+          "_comment": "Uses the DiscordSRV download API to check if the version of DiscordSRV\nbeing used is vulnerable to known vulnerabilities, disabling the plugin if it is.\nRequires a connection to: %1\n\nWARNING! DO NOT TURN THIS OFF UNLESS YOU KNOW WHAT YOU'RE DOING AND STAY UP-TO-DATE"
+        },
+        "force": {
+          "_comment": "If the security check needs to be completed for DiscordSRV to enable,\nif the security check cannot be performed, DiscordSRV will be disabled if this option is set to true"
+        }
+      }
+    }
+  }
+}
